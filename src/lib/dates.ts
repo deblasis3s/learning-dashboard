@@ -4,7 +4,8 @@
 // 14 weeks total (0-13), 7 days each = 98 days.
 
 import { weekGroups } from "@/data/curriculum";
-import type { DayPlan, WeekGroup } from "@/lib/types";
+import type { DayPlan, ProgressData, WeekGroup } from "@/lib/types";
+import { taskKey } from "@/lib/progress";
 
 // Day-of-week labels matching our 0-6 index (Mon=0, Sun=6)
 export const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -77,6 +78,54 @@ export function getDayPlan(weekIndex: number, dayIndex: number): DayPlan | undef
   const group = getWeekGroup(weekIndex);
   if (!group) return undefined;
   return group.days[dayIndex];
+}
+
+/**
+ * Strict Sequential mode — the "rubber band" cursor algorithm.
+ *
+ * Walks through all 98 tasks in order and assigns each a calendar date.
+ * - If a task has a recorded completion date → lock it to that date,
+ *   then set the cursor to completionDate + 1 day.
+ * - If a task is not completed → assign it to the current cursor,
+ *   then advance cursor by 1 day.
+ *
+ * The result: completing tasks late pushes everything after them forward.
+ * Completing tasks early (or multiple per day) pulls things back.
+ * Returns a map of "w{week}d{day}" → Date for every task.
+ */
+export function getAssignedDates(progress: ProgressData): Record<string, Date> {
+  const startMonday = snapToMonday(new Date(progress.startDate + "T00:00:00"));
+  const result: Record<string, Date> = {};
+
+  // Cursor starts at the beginning of the curriculum
+  let cursor = new Date(startMonday);
+
+  // Walk every task in curriculum order: week 0 day 0 → week 13 day 6
+  for (let w = 0; w < TOTAL_WEEKS; w++) {
+    for (let d = 0; d < 7; d++) {
+      const key = taskKey(w, d);
+      const completionDateStr = progress.taskCompletionDates?.[key];
+
+      if (completionDateStr) {
+        // Task was completed — lock it to its recorded completion date
+        const completionDate = new Date(completionDateStr + "T00:00:00");
+        result[key] = completionDate;
+        // Move cursor to the day after completion (or keep it if cursor is already ahead)
+        const dayAfter = new Date(completionDate);
+        dayAfter.setDate(dayAfter.getDate() + 1);
+        if (dayAfter > cursor) {
+          cursor = dayAfter;
+        }
+      } else {
+        // Task not completed — assign it to current cursor position
+        result[key] = new Date(cursor);
+        // Advance cursor to the next day
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    }
+  }
+
+  return result;
 }
 
 /**

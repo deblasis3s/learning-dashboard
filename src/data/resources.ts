@@ -373,6 +373,64 @@ export const resources: Resource[] = [
     category: "ai",
   },
 
+  // --- Claude Academy & Certification ---
+  {
+    name: "Claude Academy (Anthropic — free)",
+    type: "Course Platform",
+    cost: "Free",
+    whenToUse: "Weeks 0–13 — 13 self-paced courses covering the full Claude ecosystem. Start with Claude 101",
+    url: "https://anthropic.skilljar.com",
+    category: "ai",
+  },
+  {
+    name: "Claude Academy — Introduction to MCP",
+    type: "Course",
+    cost: "Free",
+    whenToUse: "Weeks 2–3 — official MCP course, covers tools, resources, and prompts",
+    url: "https://anthropic.skilljar.com/introduction-to-model-context-protocol",
+    category: "ai",
+  },
+  {
+    name: "Claude Academy — Building Applications with the Claude API",
+    type: "Course",
+    cost: "Free",
+    whenToUse: "Weeks 11–13 — API integration, structured output, production patterns",
+    url: "https://anthropic.skilljar.com/building-applications-with-the-claude-api",
+    category: "ai",
+  },
+  {
+    name: "Claude Certified Architect — Complete Guide",
+    type: "Article",
+    cost: "Free",
+    whenToUse: "Weeks 11–13 — understand the five exam domains and how to prepare",
+    url: "https://aitoolsclub.com/how-to-become-a-claude-certified-architect-complete-guide/",
+    category: "ai",
+  },
+  {
+    name: "Model Context Protocol — Introduction",
+    type: "Documentation",
+    cost: "Free",
+    whenToUse: "Weeks 2–3 — the open standard for connecting AI to tools and data",
+    url: "https://modelcontextprotocol.io/introduction",
+    category: "ai",
+  },
+  {
+    name: "Claude Computer Use API Docs",
+    type: "Documentation",
+    cost: "Free",
+    whenToUse: "Weeks 2–3 — how Claude sees screens and takes actions via pixel coordinates",
+    url: "https://docs.anthropic.com/en/docs/build-with-claude/computer-use",
+    category: "ai",
+  },
+  {
+    name: "Browser Use vs Claude Computer Use: DOM vs Vision",
+    type: "Article",
+    cost: "Free",
+    whenToUse: "Weeks 2–3 — compare DOM-based (Playwright) vs vision-based (Computer Use) browser automation",
+    url: "https://techstackups.com/comparisons/browser-use-vs-claude-computer-use/",
+    category: "ai",
+  },
+
   // --- Browser Agent Stack (AWS + RCM Domain) ---
   {
     name: "AWS SQS — What is Amazon SQS?",

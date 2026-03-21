@@ -11,6 +11,14 @@ export type FocusArea =
   | "All Three"
   | "Reflection";
 
+// The calendar modes - presets for dynamically adjusting curriculum
+export type CalendarMode = 
+  | "strict-sequential"   // Mode 1 — tasks shift based on completion
+  | "catch-up"            // Mode 2 — dates fixed, backlog accumulates
+  | "weekly-rollover"     // Mode 3 — week-level tracking with 2-week cap
+  | "deadline-anchored"   // Mode 4 — user sets end date, tasks redistribute
+  | "freeform";           // Mode 5 — no dates, task pool
+
 // A clickable link to an external resource (embedded in a day's tasks)
 export interface ResourceLink {
   name: string;    // Display name, e.g. "Codecademy - Learn JavaScript"
@@ -52,4 +60,8 @@ export interface ProgressData {
   startDate: string;                       // ISO date string (e.g. "2026-02-23")
   completedTasks: Record<string, boolean>; // Keys like "w3d2" => true
   lastUpdated: string;                     // ISO timestamp
+  calendarMode: CalendarMode;              
+  endDate?: string;                        // ISO date — used by deadline-anchored mode only
+  taskCompletionDates?: Record<string, string>; // task key → ISO date when completed
+  weekRolloverCount?: Record<number, number>;   // weekIndex → rollover count
 }

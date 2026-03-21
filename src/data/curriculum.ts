@@ -69,10 +69,15 @@ export const weekGroups: WeekGroup[] = [
       {
         dayOfWeek: "Thu",
         focus: "AI Foundations",
-        timeEstimate: "1 hr",
+        timeEstimate: "2 hr",
         description:
-          "Prompt engineering for agents — structured outputs, chain-of-thought, confidence scoring. Read Anthropic prompting guide + promptingguide.ai",
+          "Start Claude Academy (free, 13 courses). Complete Claude 101 today — it's the foundational course the entire certification path builds on. Then read the Anthropic prompt engineering guide. Goal: understand structured outputs, chain-of-thought, and confidence scoring as tools you'll use in the self-healing project",
         resourceLinks: [
+          {
+            name: "Claude Academy (Anthropic — free)",
+            url: "https://anthropic.skilljar.com",
+            type: "course",
+          },
           {
             name: "Anthropic Prompting Guide",
             url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
@@ -231,11 +236,21 @@ export const weekGroups: WeekGroup[] = [
       },
       {
         dayOfWeek: "Fri",
-        focus: "PM",
-        timeEstimate: "1 hr",
+        focus: "AI Foundations",
+        timeEstimate: "1.5 hr",
         description:
-          "Cost optimization — LLM tiering mental model (rules → cheap model → frontier model), caching healed selectors, token budgeting",
+          "Computer Use API + cost optimization — read how Claude's computer use tool works (screenshot → pixel coordinates → action), then compare it to the DOM-based approach your team uses today. This is the architecture behind vision-based RPA: no brittle selectors, just screenshot + intent. Finish with cost/tiering mental model: rules → cheap model → computer vision → frontier model",
         resourceLinks: [
+          {
+            name: "Claude Computer Use API Docs",
+            url: "https://docs.anthropic.com/en/docs/build-with-claude/computer-use",
+            type: "docs",
+          },
+          {
+            name: "Browser Use vs Claude Computer Use: DOM vs Vision",
+            url: "https://techstackups.com/comparisons/browser-use-vs-claude-computer-use/",
+            type: "article",
+          },
           {
             name: "Anthropic — Models Overview",
             url: "https://docs.anthropic.com/en/docs/about-claude/models/overview",
@@ -248,8 +263,19 @@ export const weekGroups: WeekGroup[] = [
         focus: "Project",
         timeEstimate: "2 hr",
         description:
-          "With Claude, map and annotate the existing browser agent codebase — understand how process YAMLs are structured and where LLM calls are made",
-        resourceLinks: [],
+          "With Claude, map and annotate the existing browser agent codebase — understand how process YAMLs are structured and where LLM calls are made. Then read the MCP intro: understand how tools, resources, and prompts work as the standard for connecting AI to external systems. Think about how MCP could extend the existing browser agent architecture",
+        resourceLinks: [
+          {
+            name: "Model Context Protocol — Introduction",
+            url: "https://modelcontextprotocol.io/introduction",
+            type: "docs",
+          },
+          {
+            name: "Claude Academy — Introduction to MCP (free course)",
+            url: "https://anthropic.skilljar.com/introduction-to-model-context-protocol",
+            type: "course",
+          },
+        ],
       },
       {
         dayOfWeek: "Sun",
@@ -518,9 +544,9 @@ export const weekGroups: WeekGroup[] = [
       {
         dayOfWeek: "Wed",
         focus: "PM",
-        timeEstimate: "1 hr",
+        timeEstimate: "1.5 hr",
         description:
-          "Acceptance criteria + edge cases for day-job features. AI-generate additional edge cases.",
+          "Acceptance criteria + EHR structured schema vision: spec out what it would mean for AI to fill a clinical chart from a recorded patient conversation — HPI, ROS, PE, medications, orders, forms. For each chart section, define a success/failure ontology: what does a correct vs. incorrect fill look like, and how would an AI agent evaluate its own output? This is the bridge between prompt engineering and agentic self-correction in a clinical context",
         resourceLinks: [],
       },
       {
@@ -640,8 +666,14 @@ export const weekGroups: WeekGroup[] = [
         dayOfWeek: "Thu",
         focus: "CS",
         timeEstimate: "1.5 hr",
-        description: "Build an app that calls Claude's API.",
+        description:
+          "Complete Claude Academy — Building Applications with the Claude API (free course). Then build a small app that calls Claude's API with structured output. This course directly maps to the Claude Certified Architect exam domain",
         resourceLinks: [
+          {
+            name: "Claude Academy — Building Applications with the Claude API",
+            url: "https://anthropic.skilljar.com/building-applications-with-the-claude-api",
+            type: "course",
+          },
           {
             name: "Anthropic API Docs",
             url: "https://docs.anthropic.com/en/api/getting-started",
@@ -654,15 +686,26 @@ export const weekGroups: WeekGroup[] = [
         focus: "All Three",
         timeEstimate: "1.5 hr",
         description:
-          "Read through PM Agent Tool codebase, annotate. Plan an AI-powered feature spec.",
-        resourceLinks: [],
+          "Claude Certified Architect prep — review the five exam domains: prompt engineering, agentic architecture, Claude Code, MCP integration, and tool design. Identify your strongest and weakest areas. Read through the PM Agent Tool codebase with these domains in mind",
+        resourceLinks: [
+          {
+            name: "Claude Certified Architect — Complete Guide",
+            url: "https://aitoolsclub.com/how-to-become-a-claude-certified-architect-complete-guide/",
+            type: "article",
+          },
+          {
+            name: "Claude Academy — All Courses",
+            url: "https://anthropic.skilljar.com",
+            type: "course",
+          },
+        ],
       },
       {
         dayOfWeek: "Sat",
         focus: "Project",
         timeEstimate: "2 hr",
         description:
-          "Capstone: architect + spec + design + build a new feature end-to-end with AI assistance.",
+          "Capstone: architect + spec + design + build a new feature end-to-end with AI assistance. Aim to demonstrate at least three of the Certified Architect exam domains in your design decisions",
         resourceLinks: [],
       },
       {
@@ -670,8 +713,14 @@ export const weekGroups: WeekGroup[] = [
         focus: "Reflection",
         timeEstimate: "1 hr",
         description:
-          "Write up learnings, identify gaps, plan next 13 weeks.",
-        resourceLinks: [],
+          "Write up learnings, identify gaps, plan next 13 weeks. Decide: are you ready to sit the Claude Certified Architect exam? Review remaining Claude Academy courses you haven't completed",
+        resourceLinks: [
+          {
+            name: "Claude Academy — All Courses",
+            url: "https://anthropic.skilljar.com",
+            type: "course",
+          },
+        ],
       },
     ],
   },

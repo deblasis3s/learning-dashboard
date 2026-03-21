@@ -15,6 +15,7 @@ export function defaultProgress(): ProgressData {
     startDate: new Date().toISOString().split("T")[0], // "2026-02-18"
     completedTasks: {},
     lastUpdated: new Date().toISOString(),
+    calendarMode: "strict-sequential",
   };
 }
 
