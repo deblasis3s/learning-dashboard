@@ -1,18 +1,17 @@
 // === DATE & CALENDAR MATH ===
 // All the functions that power the calendar view and "today" detection.
 // Week 0 starts on the user's chosen start date (snapped to Monday).
-// 14 weeks total (0-13), 7 days each = 98 days.
+//
+// Week math is now per-curriculum: each curriculum defines its own length
+// (curriculum.totalWeeks) and its own week groups (curriculum.weekGroups),
+// so every function below that needs to know "how many weeks" or "what's
+// the plan for this week" takes the active Curriculum as its first argument.
 
-import { weekGroups } from "@/data/curriculum";
-import type { DayPlan, ProgressData, WeekGroup } from "@/lib/types";
+import type { Curriculum, DayPlan, ProgressData, WeekGroup } from "@/lib/types";
 import { taskKey } from "@/lib/progress";
 
 // Day-of-week labels matching our 0-6 index (Mon=0, Sun=6)
 export const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-// Total weeks in the curriculum
-export const TOTAL_WEEKS = 14;
-export const TOTAL_DAYS = TOTAL_WEEKS * 7; // 98
 
 /**
  * Snap a date to the Monday of that week.
@@ -63,19 +62,19 @@ export function getTodayDayIndex(): number {
 }
 
 /**
- * Find which WeekGroup a given week number belongs to.
+ * Find which WeekGroup a given week number belongs to, within a curriculum.
  * E.g., week 9 belongs to the "weeks-8-10" group.
  */
-export function getWeekGroup(weekIndex: number): WeekGroup | undefined {
-  return weekGroups.find((wg) => wg.weekNumbers.includes(weekIndex));
+export function getWeekGroup(curriculum: Curriculum, weekIndex: number): WeekGroup | undefined {
+  return curriculum.weekGroups.find((wg) => wg.weekNumbers.includes(weekIndex));
 }
 
 /**
- * Get the DayPlan for a specific week and day.
+ * Get the DayPlan for a specific week and day, within a curriculum.
  * Returns undefined if the week/day is out of range.
  */
-export function getDayPlan(weekIndex: number, dayIndex: number): DayPlan | undefined {
-  const group = getWeekGroup(weekIndex);
+export function getDayPlan(curriculum: Curriculum, weekIndex: number, dayIndex: number): DayPlan | undefined {
+  const group = getWeekGroup(curriculum, weekIndex);
   if (!group) return undefined;
   return group.days[dayIndex];
 }
@@ -93,15 +92,15 @@ export function getDayPlan(weekIndex: number, dayIndex: number): DayPlan | undef
  * Completing tasks early (or multiple per day) pulls things back.
  * Returns a map of "w{week}d{day}" → Date for every task.
  */
-export function getAssignedDates(progress: ProgressData): Record<string, Date> {
+export function getAssignedDates(curriculum: Curriculum, progress: ProgressData): Record<string, Date> {
   const startMonday = snapToMonday(new Date(progress.startDate + "T00:00:00"));
   const result: Record<string, Date> = {};
 
   // Cursor starts at the beginning of the curriculum
   let cursor = new Date(startMonday);
 
-  // Walk every task in curriculum order: week 0 day 0 → week 13 day 6
-  for (let w = 0; w < TOTAL_WEEKS; w++) {
+  // Walk every task in curriculum order: week 0 day 0 → last week, day 6
+  for (let w = 0; w < curriculum.totalWeeks; w++) {
     for (let d = 0; d < 7; d++) {
       const key = taskKey(w, d);
       const completionDateStr = progress.taskCompletionDates?.[key];

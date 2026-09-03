@@ -24,6 +24,18 @@
   --color-focus-all-light: #e0e7ff;
   --color-focus-reflection: #0d9488; /* Teal — Reflection */
   --color-focus-reflection-light: #ccfbf1;
+
+  /* Healthcare curriculum focus colors */
+  --color-focus-interop: #0891b2;    /* Cyan — Interoperability */
+  --color-focus-interop-light: #cffafe;
+  --color-focus-quality: #65a30d;    /* Lime — Quality */
+  --color-focus-quality-light: #ecfccb;
+  --color-focus-payment: #e11d48;    /* Rose — Payment Models */
+  --color-focus-payment-light: #ffe4e6;
+  --color-focus-risk: #ea580c;       /* Orange — Risk & Coding */
+  --color-focus-risk-light: #ffedd5;
+  --color-focus-regulatory: #7c3aed; /* Violet — Regulatory */
+  --color-focus-regulatory-light: #ede9fe;
 }
 
 :root {

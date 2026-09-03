@@ -9,7 +9,8 @@ import { useProgressContext } from "@/hooks/useProgress";
 import { exportToJSON, importFromJSON } from "@/lib/progress";
 
 export default function DataPortButtons() {
-  const { progress, updateProgress, isLoaded } = useProgressContext();
+  const { progress, updateProgress, isLoaded, activeCurriculumId, switchCurriculum } =
+    useProgressContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isLoaded) return null;
@@ -25,8 +26,16 @@ export default function DataPortButtons() {
     if (!file) return;
 
     try {
-      const data = await importFromJSON(file);
-      updateProgress(data);
+      // Pass the active curriculum as a fallback — importFromJSON uses it
+      // only if the file itself doesn't say which curriculum it's from.
+      const data = await importFromJSON(file, activeCurriculumId);
+      if (data.curriculumId && data.curriculumId !== activeCurriculumId) {
+        // The imported file belongs to a different curriculum than the one
+        // we're currently viewing — switch tabs so the user lands on it.
+        switchCurriculum(data.curriculumId);
+      } else {
+        updateProgress(data);
+      }
       alert("Progress imported successfully!");
     } catch (err) {
       alert(`Import failed: ${err instanceof Error ? err.message : "Unknown error"}`);

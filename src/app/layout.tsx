@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Learning Dashboard",
-  description: "Track your 13-week learning curriculum across Design, PM, and CS",
+  description: "Track your learning curricula — from AI product building to healthcare systems",
 };
 
 export default function RootLayout({

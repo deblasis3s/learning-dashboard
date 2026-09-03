@@ -13,13 +13,12 @@ import {
   getDateForDay,
   formatDateLong,
   snapToMonday,
-  TOTAL_WEEKS,
   DAY_LABELS,
 } from "@/lib/dates";
 import FocusBadge from "./FocusBadge";
 
 export default function TodayCard() {
-  const { progress, isLoaded, toggleTask, isTaskComplete } = useProgressContext();
+  const { progress, isLoaded, toggleTask, isTaskComplete, activeCurriculum } = useProgressContext();
 
   if (!isLoaded) {
     return <div className="h-48 bg-white rounded-xl border border-gray-200 animate-pulse" />;
@@ -30,11 +29,11 @@ export default function TodayCard() {
   const todayDayIndex = getTodayDayIndex();
 
   // Before or after curriculum
-  if (currentWeek < 0 || currentWeek >= TOTAL_WEEKS) {
+  if (currentWeek < 0 || currentWeek >= activeCurriculum.totalWeeks) {
     return null; // WeekIndicator already shows the appropriate message
   }
 
-  const dayPlan = getDayPlan(currentWeek, todayDayIndex);
+  const dayPlan = getDayPlan(activeCurriculum, currentWeek, todayDayIndex);
   if (!dayPlan) return null;
 
   const completed = isTaskComplete(currentWeek, todayDayIndex);

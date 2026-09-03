@@ -9,7 +9,13 @@ export type FocusArea =
   | "Project"
   | "Reading"
   | "All Three"
-  | "Reflection";
+  | "Reflection"
+  // Healthcare curriculum focus areas (added for the healthcare-systems curriculum)
+  | "Interoperability"
+  | "Quality"
+  | "Payment Models"
+  | "Risk & Coding"
+  | "Regulatory";
 
 // The calendar modes - presets for dynamically adjusting curriculum
 export type CalendarMode = 
@@ -43,6 +49,18 @@ export interface WeekGroup {
   days: DayPlan[];       // 7 days (Mon=0 through Sun=6)
 }
 
+// A complete curriculum — the dashboard supports multiple, mutually
+// exclusive curricula that the user can tab between. Each has its own
+// progress and calendar stored separately.
+export interface Curriculum {
+  id: string;          // Stable key used in localStorage, e.g. "ai-product-builder"
+  name: string;        // Full display name
+  shortName: string;   // Short label for the tab UI
+  description: string; // One-line subtitle
+  totalWeeks: number;  // Length of this curriculum in weeks
+  weekGroups: WeekGroup[];
+}
+
 // A resource from the master list (for the resources page/reference)
 export interface Resource {
   name: string;
@@ -64,4 +82,5 @@ export interface ProgressData {
   endDate?: string;                        // ISO date — used by deadline-anchored mode only
   taskCompletionDates?: Record<string, string>; // task key → ISO date when completed
   weekRolloverCount?: Record<number, number>;   // weekIndex → rollover count
+  curriculumId?: string; // identifies which curriculum this progress belongs to; used by export/import
 }

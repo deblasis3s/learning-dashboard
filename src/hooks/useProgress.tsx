@@ -3,6 +3,12 @@
 // === PROGRESS HOOK & CONTEXT PROVIDER ===
 // Wraps localStorage operations in a React-friendly way.
 // Handles the SSR hydration gap (localStorage doesn't exist on the server).
+//
+// This hook is also where curriculum switching lives. The dashboard supports
+// multiple, mutually exclusive curricula (see src/data/curricula.ts) — each
+// one has its own progress, stored under its own localStorage key. Switching
+// curricula means: remember which one is active, then load ITS progress
+// (never mixing it with another curriculum's data).
 
 import {
   createContext,
@@ -11,14 +17,16 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { ProgressData } from "@/lib/types";
+import type { Curriculum, ProgressData } from "@/lib/types";
 import {
   defaultProgress,
+  loadActiveCurriculumId,
   loadProgress,
+  saveActiveCurriculumId,
   saveProgress,
   taskKey,
 } from "@/lib/progress";
-import { TOTAL_DAYS } from "@/lib/dates";
+import { DEFAULT_CURRICULUM_ID, getCurriculumById } from "@/data/curricula";
 
 // The shape of everything the hook returns
 interface ProgressContextValue {
@@ -28,9 +36,12 @@ interface ProgressContextValue {
   isTaskComplete: (weekIndex: number, dayIndex: number) => boolean;
   setStartDate: (date: string) => void;  // Update the curriculum start date
   completedCount: number;         // How many days are checked off
-  totalTasks: number;             // Always 98 (14 weeks × 7 days)
+  totalTasks: number;             // activeCurriculum.totalWeeks * 7
   percentComplete: number;        // 0–100
   updateProgress: (data: ProgressData) => void;  // For JSON import
+  activeCurriculum: Curriculum;   // The full curriculum object currently active
+  activeCurriculumId: string;     // Its id, e.g. "ai-product-builder"
+  switchCurriculum: (id: string) => void;  // Tab between curricula
 }
 
 // Create the context (null until provider mounts)
@@ -41,13 +52,39 @@ const ProgressContext = createContext<ProgressContextValue | null>(null);
  * Used internally by the provider — components should use useProgressContext() instead.
  */
 function useProgressState(): ProgressContextValue {
+  const [activeCurriculumId, setActiveCurriculumId] = useState(DEFAULT_CURRICULUM_ID);
   const [progress, setProgress] = useState<ProgressData>(defaultProgress());
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from localStorage once on the client
+  // On mount, figure out which curriculum was active last time, then load
+  // that curriculum's own progress. This runs once on the client.
+  //
+  // The lint rule below normally warns about setState inside an effect, but
+  // this is the standard pattern for browser-only data like localStorage:
+  // the server render can't see it, so the first client render uses defaults
+  // and this effect syncs in the real data right after mount.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    setProgress(loadProgress());
+    const id = loadActiveCurriculumId();
+    setActiveCurriculumId(id);
+    setProgress(loadProgress(id));
     setIsLoaded(true);
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // The full curriculum object (week groups, length, etc.) for whichever
+  // id is currently active. getCurriculumById defends against a bad/stale id.
+  const activeCurriculum = getCurriculumById(activeCurriculumId);
+
+  // Switch to a different curriculum: save the choice, then load that
+  // curriculum's own progress. Each curriculum's progress is fully
+  // independent — this never mixes data between them.
+  const switchCurriculum = useCallback((id: string) => {
+    // Normalize through getCurriculumById so a bad id can't get stored
+    const resolved = getCurriculumById(id);
+    saveActiveCurriculumId(resolved.id);
+    setActiveCurriculumId(resolved.id);
+    setProgress(loadProgress(resolved.id));
   }, []);
 
   // Toggle a task's completion status
@@ -61,10 +98,10 @@ function useProgressState(): ProgressContextValue {
           [key]: !progress.completedTasks[key],
         },
       };
-      saveProgress(updated);
+      saveProgress(activeCurriculumId, updated);
       setProgress(updated);
     },
-    [progress]
+    [progress, activeCurriculumId]
   );
 
   // Check if a specific task is complete
@@ -79,21 +116,25 @@ function useProgressState(): ProgressContextValue {
   const setStartDate = useCallback(
     (date: string) => {
       const updated: ProgressData = { ...progress, startDate: date };
-      saveProgress(updated);
+      saveProgress(activeCurriculumId, updated);
       setProgress(updated);
     },
-    [progress]
+    [progress, activeCurriculumId]
   );
 
   // Replace entire progress (used when importing JSON)
-  const updateProgress = useCallback((data: ProgressData) => {
-    saveProgress(data);
-    setProgress(data);
-  }, []);
+  const updateProgress = useCallback(
+    (data: ProgressData) => {
+      saveProgress(activeCurriculumId, data);
+      setProgress(data);
+    },
+    [activeCurriculumId]
+  );
 
-  // Calculate completion stats
+  // Calculate completion stats — total tasks depends on the active
+  // curriculum's length (e.g. 14 weeks vs. 12 weeks × 7 days each)
   const completedCount = Object.values(progress.completedTasks).filter(Boolean).length;
-  const totalTasks = TOTAL_DAYS;
+  const totalTasks = activeCurriculum.totalWeeks * 7;
   const percentComplete = Math.round((completedCount / totalTasks) * 100);
 
   return {
@@ -106,6 +147,9 @@ function useProgressState(): ProgressContextValue {
     totalTasks,
     percentComplete,
     updateProgress,
+    activeCurriculum,
+    activeCurriculumId,
+    switchCurriculum,
   };
 }
 

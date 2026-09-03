@@ -5,10 +5,10 @@
 // Tells the user where they are in the curriculum at a glance.
 
 import { useProgressContext } from "@/hooks/useProgress";
-import { getCurrentWeek, getWeekGroup, snapToMonday, TOTAL_WEEKS } from "@/lib/dates";
+import { getCurrentWeek, getWeekGroup, snapToMonday } from "@/lib/dates";
 
 export default function WeekIndicator() {
-  const { progress, isLoaded } = useProgressContext();
+  const { progress, isLoaded, activeCurriculum } = useProgressContext();
 
   if (!isLoaded) {
     return <div className="h-8 w-64 bg-gray-200 rounded animate-pulse" />;
@@ -30,23 +30,23 @@ export default function WeekIndicator() {
   }
 
   // After curriculum ends
-  if (currentWeek >= TOTAL_WEEKS) {
+  if (currentWeek >= activeCurriculum.totalWeeks) {
     return (
       <div className="text-lg">
         <span className="text-green-600 font-semibold">Curriculum complete!</span>{" "}
-        <span className="text-gray-500">You finished all 14 weeks.</span>
+        <span className="text-gray-500">You finished all {activeCurriculum.totalWeeks} weeks.</span>
       </div>
     );
   }
 
   // During curriculum
-  const weekGroup = getWeekGroup(currentWeek);
+  const weekGroup = getWeekGroup(activeCurriculum, currentWeek);
   return (
     <div>
       <span className="text-2xl font-bold text-gray-900">
         Week {currentWeek + 1}
       </span>
-      <span className="text-2xl text-gray-400"> of {TOTAL_WEEKS}</span>
+      <span className="text-2xl text-gray-400"> of {activeCurriculum.totalWeeks}</span>
       {weekGroup && (
         <p className="text-gray-500 mt-0.5">{weekGroup.title}</p>
       )}

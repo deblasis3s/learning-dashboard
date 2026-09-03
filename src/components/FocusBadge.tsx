@@ -16,6 +16,11 @@ const focusStyles: Record<FocusArea, { bg: string; text: string; border: string 
   Reading:          { bg: "bg-focus-reading-light", text: "text-focus-reading", border: "border-focus-reading" },
   "All Three":      { bg: "bg-focus-all-light", text: "text-focus-all", border: "border-focus-all" },
   Reflection:       { bg: "bg-focus-reflection-light", text: "text-focus-reflection", border: "border-focus-reflection" },
+  Interoperability: { bg: "bg-focus-interop-light", text: "text-focus-interop", border: "border-focus-interop" },
+  Quality:          { bg: "bg-focus-quality-light", text: "text-focus-quality", border: "border-focus-quality" },
+  "Payment Models": { bg: "bg-focus-payment-light", text: "text-focus-payment", border: "border-focus-payment" },
+  "Risk & Coding":  { bg: "bg-focus-risk-light", text: "text-focus-risk", border: "border-focus-risk" },
+  Regulatory:       { bg: "bg-focus-regulatory-light", text: "text-focus-regulatory", border: "border-focus-regulatory" },
 };
 
 interface FocusBadgeProps {

@@ -1,20 +1,23 @@
 "use client";
 
 // === CALENDAR GRID ===
-// Shows all 14 weeks as a grid. Each week is a row of 7 DayCells.
-// On mobile, cells stack vertically for readability.
+// Shows every week of the active curriculum as a grid.
+// Each week is a row of 7 DayCells. On mobile, cells stack vertically for readability.
 
-import { weekGroups } from "@/data/curriculum";
-import { DAY_LABELS, TOTAL_WEEKS } from "@/lib/dates";
+import { DAY_LABELS } from "@/lib/dates";
+import { useProgressContext } from "@/hooks/useProgress";
+import type { DayPlan } from "@/lib/types";
 import DayCell from "./DayCell";
 
 export default function CalendarGrid() {
-  // Build a flat list of all 14 weeks, each referencing its week group's days
-  const allWeeks: { weekIndex: number; groupTitle: string; days: typeof weekGroups[0]["days"] }[] = [];
+  const { activeCurriculum } = useProgressContext();
 
-  for (let w = 0; w < TOTAL_WEEKS; w++) {
+  // Build a flat list of all weeks, each referencing its week group's days
+  const allWeeks: { weekIndex: number; groupTitle: string; days: DayPlan[] }[] = [];
+
+  for (let w = 0; w < activeCurriculum.totalWeeks; w++) {
     // Find which group this week belongs to
-    const group = weekGroups.find((g) => g.weekNumbers.includes(w));
+    const group = activeCurriculum.weekGroups.find((g) => g.weekNumbers.includes(w));
     if (group) {
       allWeeks.push({
         weekIndex: w,

@@ -13,14 +13,13 @@ import {
   getWeekGroup,
   formatDateLong,
   snapToMonday,
-  TOTAL_WEEKS,
   DAY_LABELS,
 } from "@/lib/dates";
 import FocusBadge from "@/components/FocusBadge";
 
 export default function DayDetailPage() {
   const params = useParams();
-  const { progress, isLoaded, toggleTask, isTaskComplete } = useProgressContext();
+  const { progress, isLoaded, toggleTask, isTaskComplete, activeCurriculum } = useProgressContext();
 
   // Parse route params
   const weekIndex = Number(params.weekIndex);
@@ -29,7 +28,7 @@ export default function DayDetailPage() {
   // Validate params
   if (
     isNaN(weekIndex) || isNaN(dayIndex) ||
-    weekIndex < 0 || weekIndex >= TOTAL_WEEKS ||
+    weekIndex < 0 || weekIndex >= activeCurriculum.totalWeeks ||
     dayIndex < 0 || dayIndex > 6
   ) {
     return (
@@ -43,8 +42,8 @@ export default function DayDetailPage() {
     );
   }
 
-  const dayPlan = getDayPlan(weekIndex, dayIndex);
-  const weekGroup = getWeekGroup(weekIndex);
+  const dayPlan = getDayPlan(activeCurriculum, weekIndex, dayIndex);
+  const weekGroup = getWeekGroup(activeCurriculum, weekIndex);
 
   if (!dayPlan || !weekGroup) return null;
 
@@ -61,7 +60,7 @@ export default function DayDetailPage() {
 
   const nextWeek = dayIndex === 6 ? weekIndex + 1 : weekIndex;
   const nextDay = dayIndex === 6 ? 0 : dayIndex + 1;
-  const hasNext = nextWeek < TOTAL_WEEKS;
+  const hasNext = nextWeek < activeCurriculum.totalWeeks;
 
   return (
     <div className="max-w-2xl mx-auto">
