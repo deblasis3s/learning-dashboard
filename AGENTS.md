@@ -22,3 +22,7 @@ npm run dev    # http://localhost:3000
 npm run build
 npm run lint
 ```
+
+## How to Verify
+
+No automated tests yet. Run `npm run lint`, `npx tsc --noEmit`, and `npm run build`. Then run the app (preview config in `.claude/launch.json`, or `npm run dev` at http://localhost:3000): change progress in one curriculum, reload, and confirm it persisted for that curriculum only. Each curriculum has its own localStorage keys.
